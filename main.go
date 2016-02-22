@@ -94,6 +94,8 @@ func main() {
 	redisClient = redis.NewClient(options)
 	defer redisClient.Close()
 
+	redisClient.ConfigSet("notify-keyspace-events", "Ex")
+
 	r := mux.NewRouter()
 	r.HandleFunc("/pub/{documentid}", handlePublish)
 	r.HandleFunc("/pub/{documentid}/{ttl}", handlePublishTTL)
