@@ -2,99 +2,40 @@
 
 <meta charset="utf-8" />
 
-<title>WebSocket Test</title>
+<title>Document Event Publisher</title>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+
+<style>
+textarea {
+    width:500px;
+    height:400px;
+}
+</style>
 
 <script language="javascript" type="text/javascript">
 
-  var wsUri = "ws://localhost:2000/pub/";
-  var input, output, button;
+$( document ).ready(function() {
+    $("#send-button").on("click", sendButtonClick)
+});
 
-  function init()
-  {
-    input = document.getElementById("input");
-    output = document.getElementById("output");
-	button = document.getElementById("input-button");
-	button.onclick = onInputChange;
-
-
-	document.getElementById("connect-button").onclick = testWebSocket;
-
-    //testWebSocket();
-  }
-
-  function onInputChange(event) {
-	  writeToScreen(input.value);
-	  doSend(input.value);
-  }
-
-  function testWebSocket()
-  {
-
-	var uri = wsUri + document.getElementById("device").value + "/" + document.getElementById("session").value;
-    websocket = new WebSocket(uri);
-
-    websocket.onopen = function(evt) { onOpen(evt) };
-    websocket.onclose = function(evt) { onClose(evt) };
-    websocket.onmessage = function(evt) { onMessage(evt) };
-    websocket.onerror = function(evt) { onError(evt) };
-  }
-
-  function onOpen(evt)
-  {
-    writeToScreen("CONNECTED");
-  }
-
-  function onClose(evt)
-  {
-    writeToScreen("DISCONNECTED");
-  }
-
-  function onMessage(evt)
-  {
-    writeToScreen('<span style="color: blue;">RESPONSE: ' + evt.data+'</span>');
-    //websocket.close();
-  }
-
-  function onError(evt)
-  {
-    writeToScreen('<span style="color: red;">ERROR:</span> ' + evt.data);
-  }
-
-  function doSend(message)
-  {
-    writeToScreen("SENT: " + message); 
-    websocket.send(message);
-  }
-
-  function writeToScreen(message)
-  {
-    var pre = document.createElement("p");
-    pre.style.wordWrap = "break-word";
-    pre.innerHTML = message;
-    output.appendChild(pre);
-  }
-
-  window.addEventListener("load", init, false);
+function sendButtonClick() {
+    documentid = $("#document-id").val();
+    payload = $("#json-payload").val();
+    $.post("/pub/"+documentid, payload);
+}
 
 </script>
 
-<h2>WebSocket Test</h2>
+<body>
+    <h1>Create a Document Notification</h1>
+    
+    <h3>Some ID of the document</h3>
+    <input type="textbox" placeholder="Document ID" id="document-id"/>
 
-<input type="textbox" placeholder="Device" id="device"/>
-<input type="textbox" placeholder="Session" id="session"/>
-<button id="connect-button">Connect</button>
+    <h3>Notification Payload (json)</h3>
+    <button id="send-button">Send</button><br/>j
+    <textarea id="json-payload" width="50"></textarea>
 
-<h3>Input</h3>
-<textarea id="input"></textarea>
-<button id="input-button">Send</button>
-
-
-<h3>Output</h3>
-<div id="output"></div>
-
-
-
-
-
-
-
+</body>
+</html>
