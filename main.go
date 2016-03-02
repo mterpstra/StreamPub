@@ -124,6 +124,7 @@ func redisMonitor() {
 	}
 }
 
+// Change for CI testing 001
 func main() {
 
 	var err error
